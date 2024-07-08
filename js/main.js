@@ -7,12 +7,20 @@ btnNext.forEach(function (button) {
     button.addEventListener("click", function () {
         // this ссылается на ту кнопку, по которой кликнули
         var thisCard = this.closest("[data-card]")
-
+        var thisCardNumber = parseInt(thisCard.dataset.card)
 
         if (thisCard.dataset.validate == "novalidate") {
             navigate("next", thisCard)
         } else {
-            navigate("next", thisCard)
+            // При движении вперед вопрос и ответ сохраняются в объект
+            saveAnswer(thisCardNumber, gatherCardData(thisCardNumber))
+
+            // Валидация на заполненность
+            if (isFilled(thisCardNumber)) {
+                navigate("next", thisCard)
+            } else {
+                alert("Обязательно нужно ответить ! ")
+            }
         }
     })
 })
@@ -74,11 +82,82 @@ function gatherCardData(number) {
         }
     })
 
+    // находим все чекбоксы
+    var checkBoxValues = currentCard.querySelectorAll('[type="checkbox"]')
+    checkBoxValues.forEach(function (item) {
+        if (item.checked) {
+            result.push({
+                name: item.name,
+                value: item.value
+            })
+        }
+    })
+
+    //находим все инпуты
+    var inputValues = currentCard.querySelectorAll('[type="email"],[type="email"], [type="number"]')
+    inputValues.forEach(function (item) {
+        itemValue = item.value
+        if (itemValue.trim() != "") {
+            result.push({
+                name: item.name,
+                value: item.value
+            })
+        }
+    })
+
     var data = {
         question: question,
         answer: result
     }
 
     return data
+
+}
+
+// Функция записи ответа в объект с ответами
+function saveAnswer(number, data) {
+    answers[number] = data
+}
+
+// Функция проверки заполненного ответа
+// Обращается к объекту answers
+function isFilled(number) {
+    if (answers[number].answer.length > 0) {
+        return true
+    } else {
+        return false
+    }
+}
+
+// E-mail validation
+function validateEmail(email) {
+    var pattern = /^[\w-\.]+@[/w-]+\.[a-z]{2,4}$/i
+    return pattern.test(email)
+}
+
+// Проверка на заполненность required чекбоксов и инпутов с e-mail
+function checkOnRequired(number) {
+    var currentCard = document.querySelector(`[data-card="${number}"]`)
+    var requiredFields = currentCard.querySelectorAll("[required]");
+    var isValidArray = []
+
+    requiredFields.forEach(function (item) {
+        if (item.type == "checkbox" && item.checked == false) {
+            isValidArray.push(false)
+        } else if (item.type == "email") {
+            if (validateEmail(item.value)) {
+                isValidArray.push(true)
+            } else {
+                isValidArray.push(false)
+            }
+        }
+    })
+
+    // По итогу проверяем массив с false
+    if (isValidArray.indexOf(false) == -1) {
+        return true
+    } else {
+        return false
+    }
 
 }
