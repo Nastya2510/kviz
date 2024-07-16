@@ -11,13 +11,15 @@ btnNext.forEach(function (button) {
 
         if (thisCard.dataset.validate == "novalidate") {
             navigate("next", thisCard)
+            updateProgressBar("next", thisCardNumber)
         } else {
             // При движении вперед вопрос и ответ сохраняются в объект
             saveAnswer(thisCardNumber, gatherCardData(thisCardNumber))
 
             // Валидация на заполненность
-            if (isFilled(thisCardNumber)) {
+            if (isFilled(thisCardNumber) && checkOnRequired(thisCardNumber)) {
                 navigate("next", thisCard)
+                updateProgressBar("next", thisCardNumber)
             } else {
                 alert("Обязательно нужно ответить ! ")
             }
@@ -30,7 +32,9 @@ btnPrev.forEach(function (button) {
     button.addEventListener("click", function () {
         // this ссылается на ту кнопку, по которой кликнули
         var thisCard = this.closest("[data-card]")
+        var thisCardNumber = parseInt(thisCard.dataset.card)
         navigate("prev", thisCard)
+        updateProgressBar("prev", thisCardNumber)
     })
 })
 
@@ -131,7 +135,7 @@ function isFilled(number) {
 
 // E-mail validation
 function validateEmail(email) {
-    var pattern = /^[\w-\.]+@[/w-]+\.[a-z]{2,4}$/i
+    var pattern = /^[\w-\.]+@[\w-]+\.[a-z]{2,4}$/i
     return pattern.test(email)
 }
 
@@ -161,3 +165,60 @@ function checkOnRequired(number) {
     }
 
 }
+
+//Оформление радиокнопок. Подсветка рамки
+document.querySelectorAll(".radio-group").forEach(function (item) {
+    item.addEventListener("click", function (e) {
+        //Проверяем клик внутри label
+        var label = e.target.closest("label")
+        if (label) {
+            //Отменяем подсветку у всех
+            label.closest(".radio-group").querySelectorAll("label").forEach(function (item) {
+                item.classList.remove("radio-block--active");
+            })
+            //Добавляем подсветку
+            label.classList.add("radio-block--active")
+        }
+    })
+})
+
+//Оформление чекбоксов
+document.querySelectorAll('label.checkbox-block input[type="checkbox"]').forEach(function (item) {
+    item.addEventListener('change', function () {
+        if (item.checked) {
+            item.closest("label").classList.add("checkbox-block--active")
+        } else {
+            item.closest("label").classList.remove("checkbox-block--active")
+        }
+    })
+})
+
+//Отображение прогресс бара
+function updateProgressBar(direction, cardNumber) {
+    var cardsTotalNumber = document.querySelectorAll("[data-card]").length
+
+    //Проверка направления перемещения
+    if (direction == "next") {
+        cardNumber = cardNumber + 1
+    } else if (direction == "prev") {
+        cardNumber = cardNumber - 1
+    }
+
+    //Расчет процентов прогрес бара
+    var progress = (cardNumber * 100) / cardsTotalNumber
+    progress = progress.toFixed()
+
+
+    var progressBar = document.querySelector(`[data-card="${cardNumber}"]`).querySelector(".progress")
+    if (progressBar) {
+        //Находим и изменяем прогресс бар в разметке (число с процентом)
+        progressBar.querySelector(".progress__label strong").innerHTML = `${progress}%`
+        //Изменение стиля прогресс бара
+        progressBar.querySelector(".progress__line-bar").style = `width: ${progress}%`
+    }
+
+}
+
+
+
+updateProgressBar()
