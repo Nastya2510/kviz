@@ -6,7 +6,6 @@ _**Общий план проекта:**_
 5. работа прогресс бара
 6. подстветка рамки для радио кнопок и чекбоксов
 
-
 Первым делом сократили код, убрав все в отдельную функцию.
 Функция **navigate()** - она универсальная, предназначена для движения вперед и назад.
 Она должна понимать куда мы движаемся и где находимся. Будем сообщать это ей с помощью аргумента функции **direction** и **thisCard**.
@@ -27,3 +26,21 @@ _**Общий план проекта:**_
 **2. Запись собранных данных (их возвращает функция) в глобальный объект answers.**
 Напишем функцию, которая будет записывать собранные данные функцией gatherCardDate() в объект Answers к нужной карточке. Это будет фукнция записи ответов в объект с ответами. Функция будет принимать в себя другую функцию и использовать возвращенное ей значение.
 _saveAnswer(thisCardNumber, gatherCardData(thisCardNumber))_
+
+Визуал проекта
+![image](https://github.com/user-attachments/assets/d420c3d9-0c43-4102-84c7-bd864f807fb9)
+![image](https://github.com/user-attachments/assets/8eb00d41-ebd4-4278-89e3-9dc4592682d5)
+![image](https://github.com/user-attachments/assets/f68aef87-f276-4a6a-91b3-40668ce9b1f7)
+![image](https://github.com/user-attachments/assets/13612ee2-0e4f-4d59-a91f-2e5f2d2e13d9)
+![image](https://github.com/user-attachments/assets/f7ca33f1-03d3-445e-b197-3a3265db5012)
+![image](https://github.com/user-attachments/assets/912cb83b-bc5b-49f1-a94f-f846b047c876)
+
+
+
+
+
+
+
+
+
+
